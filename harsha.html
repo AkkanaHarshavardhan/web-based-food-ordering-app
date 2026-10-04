@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foodie - Food Ordering App</title>
+
+  <style>
+    :root {
+      --primary: #ff5a36;
+      --primary-dark: #e84825;
+      --background: #fffaf5;
+      --card: #ffffff;
+      --text: #292929;
+      --muted: #777777;
+      --border: #dddddd;
+      --soft: #fff0e7;
+      --success: #1b9b59;
+      --danger: #d93636;
+      --blue: #2674e8;
+      --warning: #e99a12;
+    }
+
+    body.dark {
+      --background: #121212;
+      --card: #1e1e1e;
+      --text: #f4f4f4;
+      --muted: #bbbbbb;
+      --border: #444444;
+      --soft: #2c211d;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 7%;
+      background: var(--card);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      color: var(--primary);
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    .theme-button,
+    .login-button,
+    .logout-button,
+    .cart-button {
+      border: none;
+      border-radius: 22px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .theme-button {
+      background: var(--soft);
+      color: var(--text);
+    }
+
+    .login-button {
+      background: var(--blue);
+      color: white;
+    }
+
+    .logout-button {
+      display: none;
+      background: var(--danger);
+      color: white;
+    }
+
+    .cart-button {
+      background: var(--primary);
+      color: white;
+    }
+
+    #cartCount {
+      background: white;
+      color: var(--primary);
+      border-radius: 50%;
+      padding: 3px 7px;
+      margin-left: 4px;
+    }
+
+    #welcomeUser {
+      display: none;
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .hero {
+      min-height: 500px;
+      padding: 70px 10%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--soft);
+    }
+
+    .hero-content {
+      max-width: 600px;
+    }
+
+    .small-title {
+      color: var(--primary);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero-text {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    .hero-image {
+      width: 260px;
+      height: 260px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--primary);
+      border-radius: 50%;
+      font-size: 130px;
+      transform: rotate(-8deg);
+      box-shadow: 0 15px 35px rgba(255, 90, 54, 0.3);
+    }
+
+    .primary-button {
+      display: inline-block;
+      border: none;
+      border-radius: 7px;
+      padding: 13px 23px;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .primary-button:hover {
+      background: var(--primary-dark);
+    }
+
+    .menu-section,
+    .orders-section {
+      padding: 70px 7%;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .section-heading h2,
+    .about-section h2,
+    .orders-section h2 {
+      font-size: 34px;
+    }
+
+    .menu-tools {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 35px;
+    }
+
+    .menu-tools input,
+    .menu-tools select,
+    form input,
+    form textarea,
+    form select {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 13px;
+      font-size: 15px;
+      outline: none;
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .menu-tools input {
+      width: 300px;
+    }
+
+    .menu-tools select {
+      width: 200px;
+    }
+
+    .menu-tools input:focus,
+    .menu-tools select:focus,
+    form input:focus,
+    form textarea:focus,
+    form select:focus {
+      border-color: var(--primary);
+    }
+
+    .food-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 25px;
+    }
+
+    .food-card {
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .food-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .food-image {
+      height: 160px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--soft);
+      font-size: 75px;
+    }
+
+    .food-details {
+      padding: 18px;
+    }
+
+    .food-details h3 {
+      margin-bottom: 7px;
+    }
+
+    .food-description {
+      height: 40px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .food-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .food-price {
+      color: var(--primary);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .add-button {
+      border: none;
+      border-radius: 5px;
+      padding: 9px 12px;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+    }
+
+    .add-button:hover {
+      background: var(--primary-dark);
+    }
+
+    .about-section {
+      padding: 65px 7%;
+      text-align: center;
+      background: var(--soft);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      max-width: 900px;
+      margin: 35px auto 0;
+    }
+
+    .feature {
+      padding: 25px;
+      border-radius: 10px;
+      background: var(--card);
+    }
+
+    .feature span {
+      font-size: 38px;
+    }
+
+    .feature h3 {
+      margin: 13px 0 8px;
+    }
+
+    .feature p {
+      color: var(--muted);
+    }
+
+    .orders-section {
+      background: var(--card);
+    }
+
+    .orders-container {
+      max-width: 900px;
+      margin: 30px auto 0;
+    }
+
+    .order-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 18px;
+      background: var(--background);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 15px;
+    }
+
+    .order-id {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .order-date {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .order-status {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 20px;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .status-placed {
+      background: var(--blue);
+    }
+
+    .status-preparing {
+      background: var(--warning);
+    }
+
+    .status-out {
+      background: #8b51d6;
+    }
+
+    .status-delivered {
+      background: var(--success);
+    }
+
+    .status-cancelled {
+      background: var(--danger);
+    }
+
+    .status-progress {
+      display: flex;
+      justify-content: space-between;
+      margin: 18px 0;
+      position: relative;
+    }
+
+    .status-progress::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      left: 8%;
+      right: 8%;
+      height: 3px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    .progress-step {
+      position: relative;
+      z-index: 1;
+      width: 25%;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .progress-circle {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 6px;
+      border-radius: 50%;
+      background: var(--border);
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .progress-step.active {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .progress-step.active .progress-circle {
+      background: var(--primary);
+    }
+
+    .progress-step.completed .progress-circle {
+      background: var(--success);
+    }
+
+    .order-items {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .cancel-order-button {
+      border: 1px solid var(--danger);
+      border-radius: 5px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--danger);
+      cursor: pointer;
+    }
+
+    .cancel-order-button:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      padding: 30px 15px;
+      background: rgba(0, 0, 0, 0.65);
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      padding: 28px;
+      border-radius: 12px;
+      background: var(--card);
+      position: relative;
+    }
+
+    .modal-content h2 {
+      color: var(--primary);
+      margin-bottom: 22px;
+    }
+
+    .close-button {
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    form label {
+      margin-top: 7px;
+      font-weight: bold;
+    }
+
+    form textarea {
+      resize: vertical;
+      font-family: Arial, sans-serif;
+    }
+
+    .form-message {
+      min-height: 20px;
+      margin: 8px 0;
+      color: var(--danger);
+      font-size: 14px;
+    }
+
+    .switch-form {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .switch-form button {
+      border: none;
+      background: transparent;
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .cart-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+
+    .cart-food-info {
+      flex: 1;
+    }
+
+    .cart-food-info h4 {
+      margin-bottom: 5px;
+    }
+
+    .cart-food-info p {
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quantity-controls button {
+      width: 27px;
+      height: 27px;
+      border: none;
+      border-radius: 4px;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-size: 17px;
+    }
+
+    .remove-button {
+      border: none;
+      background: transparent;
+      color: var(--danger);
+      cursor: pointer;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 22px 0;
+      font-size: 19px;
+    }
+
+    .full-button {
+      width: 100%;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 25px;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 20px;
+      text-align: center;
+      background: #292929;
+      color: white;
+    }
+
+    @media (max-width: 850px) {
+      header {
+        padding: 15px 5%;
+      }
+
+      nav {
+        gap: 8px;
+      }
+
+      nav a {
+        display: none;
+      }
+
+      #welcomeUser {
+        display: none !important;
+      }
+
+      .hero {
+        padding: 50px 7%;
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+      }
+
+      .hero h1 {
+        font-size: 38px;
+      }
+
+      .hero-image {
+        width: 190px;
+        height: 190px;
+        font-size: 90px;
+      }
+
+      .menu-tools {
+        flex-direction: column;
+      }
+
+      .menu-tools input,
+      .menu-tools select {
+        width: 100%;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .cart-row {
+        flex-wrap: wrap;
+      }
+
+      .order-header,
+      .order-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">🍔 Foodie</div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#menu">Menu</a>
+      <a href="#orders">Orders</a>
+      <a href="#about">About</a>
+
+      <button id="themeButton" class="theme-button">
+        🌙 Dark
+      </button>
+
+      <span id="welcomeUser"></span>
+
+      <button id="loginButton" class="login-button">
+        Login
+      </button>
+
+      <button id="logoutButton" class="logout-button">
+        Logout
+      </button>
+
+      <button id="cartButton" class="cart-button">
+        🛒 Cart <span id="cartCount">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <p class="small-title">Fresh food delivered fast</p>
+
+        <h1>Delicious food at your doorstep</h1>
+
+        <p class="hero-text">
+          Order your favorite meals from Foodie and enjoy tasty food
+          whenever you want.
+        </p>
+
+        <a href="#menu" class="primary-button">Order Now</a>
+      </div>
+
+      <div class="hero-image">🍕</div>
+    </section>
+
+    <section id="menu" class="menu-section">
+      <div class="section-heading">
+        <p class="small-title">Our menu</p>
+        <h2>Choose your favorite food</h2>
+      </div>
+
+      <div class="menu-tools">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search food..."
+        >
+
+        <select id="categoryFilter">
+          <option value="All">All Categories</option>
+          <option value="Pizza">Pizza</option>
+          <option value="Burger">Burger</option>
+          <option value="Indian">Indian</option>
+          <option value="Noodles">Noodles</option>
+          <option value="Snacks">Snacks</option>
+          <option value="Drinks">Drinks</option>
+          <option value="Dessert">Dessert</option>
+        </select>
+      </div>
+
+      <div id="foodContainer" class="food-container"></div>
+    </section>
+
+    <section id="orders" class="orders-section">
+      <div class="section-heading">
+        <p class="small-title">Track your food</p>
+        <h2>My Orders</h2>
+      </div>
+
+      <div id="ordersContainer" class="orders-container"></div>
+    </section>
+
+    <section id="about" class="about-section">
+      <h2>Why choose Foodie?</h2>
+
+      <div class="features">
+        <div class="feature">
+          <span>🚀</span>
+          <h3>Fast Delivery</h3>
+          <p>Get your food delivered quickly.</p>
+        </div>
+
+        <div class="feature">
+          <span>🍽️</span>
+          <h3>Fresh Food</h3>
+          <p>We prepare every order fresh.</p>
+        </div>
+
+        <div class="feature">
+          <span>💳</span>
+          <h3>Easy Ordering</h3>
+          <p>Order food with just a few clicks.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Login/Register Modal -->
+  <div id="authModal" class="modal">
+    <div class="modal-content">
+      <button id="closeAuth" class="close-button">&times;</button>
+
+      <h2 id="authTitle">Login</h2>
+
+      <form id="authForm">
+        <div id="nameField" style="display: none;">
+          <label for="authName">Name</label>
+          <input type="text" id="authName">
+        </div>
+
+        <label for="authEmail">Email</label>
+        <input type="email" id="authEmail" required>
+
+        <label for="authPassword">Password</label>
+        <input type="password" id="authPassword" minlength="4" required>
+
+        <p id="authMessage" class="form-message"></p>
+
+        <button type="submit" class="primary-button full-button">
+          Login
+        </button>
+      </form>
+
+      <p class="switch-form">
+        <span id="switchText">Don't have an account?</span>
+        <button id="switchAuth" type="button">Register</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <button id="closeCart" class="close-button">&times;</button>
+
+      <h2>Your Cart</h2>
+
+      <div id="cartItems"></div>
+
+      <div class="cart-total">
+        <strong>Total:</strong>
+        <strong id="cartTotal">₹0</strong>
+      </div>
+
+      <button id="checkoutButton" class="primary-button full-button">
+        Proceed to Checkout
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <button id="closeCheckout" class="close-button">&times;</button>
+
+      <h2>Checkout</h2>
+
+      <form id="checkoutForm">
+        <label for="customerName">Name</label>
+        <input type="text" id="customerName" required>
+
+        <label for="customerPhone">Phone Number</label>
+        <input
+          type="tel"
+          id="customerPhone"
+          pattern="[0-9]{10}"
+          placeholder="10-digit phone number"
+          required
+        >
+
+        <label for="customerAddress">Delivery Address</label>
+        <textarea id="customerAddress" rows="4" required></textarea>
+
+        <label for="paymentMethod">Payment Method</label>
+        <select id="paymentMethod" required>
+          <option value="">Select payment method</option>
+          <option value="Cash on Delivery">Cash on Delivery</option>
+          <option value="UPI">UPI</option>
+          <option value="Card">Card</option>
+        </select>
+
+        <p id="checkoutMessage" class="form-message"></p>
+
+        <button type="submit" class="primary-button full-button">
+          Place Order
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 Foodie. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const foods = [
+      {
+        id: 1,
+        name: "Margherita Pizza",
+        category: "Pizza",
+        price: 249,
+        emoji: "🍕",
+        description: "Cheesy pizza with tomato and fresh basil"
+      },
+      {
+        id: 2,
+        name: "Chicken Burger",
+        category: "Burger",
+        price: 189,
+        emoji: "🍔",
+        description: "Crispy chicken patty with fresh vegetables"
+      },
+      {
+        id: 3,
+        name: "Veg Biryani",
+        category: "Indian",
+        price: 180,
+        emoji: "🍛",
+        description: "Flavorful rice cooked with vegetables and spices"
+      },
+      {
+        id: 4,
+        name: "Masala Dosa",
+        category: "Indian",
+        price: 100,
+        emoji: "🥞",
+        description: "Crispy dosa served with potato masala"
+      },
+      {
+        id: 5,
+        name: "French Fries",
+        category: "Snacks",
+        price: 90,
+        emoji: "🍟",
+        description: "Golden crispy fries with tomato sauce"
+      },
+      {
+        id: 6,
+        name: "Chocolate Cake",
+        category: "Dessert",
+        price: 140,
+        emoji: "🍰",
+        description: "Soft chocolate cake with creamy topping"
+      },
+      {
+        id: 7,
+        name: "Fresh Lime Soda",
+        category: "Drinks",
+        price: 70,
+        emoji: "🥤",
+        description: "Refreshing lime soda with ice"
+      },
+      {
+        id: 8,
+        name: "Ice Cream",
+        category: "Dessert",
+        price: 110,
+        emoji: "🍨",
+        description: "Creamy vanilla ice cream with chocolate syrup"
+      },
+      {
+        id: 9,
+        name: "Farmhouse Pizza",
+        category: "Pizza",
+        price: 299,
+        emoji: "🍕",
+        description: "Pizza topped with onion, capsicum and mushrooms"
+      },
+      {
+        id: 10,
+        name: "Paneer Tikka Pizza",
+        category: "Pizza",
+        price: 329,
+        emoji: "🍕",
+        description: "Spicy paneer tikka with cheese and vegetables"
+      },
+      {
+        id: 11,
+        name: "Chicken Pepperoni Pizza",
+        category: "Pizza",
+        price: 399,
+        emoji: "🍕",
+        description: "Loaded pizza with chicken pepperoni and mozzarella"
+      },
+      {
+        id: 12,
+        name: "Cheese Burst Pizza",
+        category: "Pizza",
+        price: 349,
+        emoji: "🍕",
+        description: "Extra cheese pizza with cheese-filled crust"
+      },
+      {
+        id: 13,
+        name: "Veggie Burger",
+        category: "Burger",
+        price: 149,
+        emoji: "🍔",
+        description: "Healthy vegetable patty with lettuce and tomato"
+      },
+      {
+        id: 14,
+        name: "Cheese Burger",
+        category: "Burger",
+        price: 169,
+        emoji: "🍔",
+        description: "Juicy burger with melted cheese and special sauce"
+      },
+      {
+        id: 15,
+        name: "Double Chicken Burger",
+        category: "Burger",
+        price: 279,
+        emoji: "🍔",
+        description: "Double chicken patties with cheese and vegetables"
+      },
+      {
+        id: 16,
+        name: "Mushroom Burger",
+        category: "Burger",
+        price: 179,
+        emoji: "🍔",
+        description: "Grilled mushroom patty with creamy mayonnaise"
+      },
+      {
+        id: 17,
+        name: "Chicken Biryani",
+        category: "Indian",
+        price: 260,
+        emoji: "🍗",
+        description: "Aromatic basmati rice with spicy chicken"
+      },
+      {
+        id: 18,
+        name: "Mutton Biryani",
+        category: "Indian",
+        price: 340,
+        emoji: "🍖",
+        description: "Tender mutton cooked with fragrant biryani rice"
+      },
+      {
+        id: 19,
+        name: "Paneer Butter Masala",
+        category: "Indian",
+        price: 220,
+        emoji: "🥘",
+        description: "Soft paneer in creamy tomato gravy"
+      },
+      {
+        id: 20,
+        name: "Butter Naan",
+        category: "Indian",
+        price: 45,
+        emoji: "🫓",
+        description: "Soft Indian bread topped with butter"
+      },
+      {
+        id: 21,
+        name: "Chicken Fried Rice",
+        category: "Indian",
+        price: 210,
+        emoji: "🍚",
+        description: "Fried rice with chicken and vegetables"
+      },
+      {
+        id: 22,
+        name: "Gobi Manchurian",
+        category: "Indian",
+        price: 160,
+        emoji: "🥦",
+        description: "Crispy cauliflower with spicy Manchurian sauce"
+      },
+      {
+        id: 23,
+        name: "Chole Bhature",
+        category: "Indian",
+        price: 150,
+        emoji: "🍲",
+        description: "Spicy chickpea curry with fluffy bhatura"
+      },
+      {
+        id: 24,
+        name: "Idli Sambar",
+        category: "Indian",
+        price: 80,
+        emoji: "🥣",
+        description: "Soft idlis with hot sambar and chutney"
+      },
+      {
+        id: 25,
+        name: "Poori Masala",
+        category: "Indian",
+        price: 95,
+        emoji: "🍽️",
+        description: "Fluffy pooris served with potato masala"
+      },
+      {
+        id: 26,
+        name: "Chicken Noodles",
+        category: "Noodles",
+        price: 190,
+        emoji: "🍜",
+        description: "Stir-fried noodles with chicken and vegetables"
+      },
+      {
+        id: 27,
+        name: "Veg Hakka Noodles",
+        category: "Noodles",
+        price: 150,
+        emoji: "🍜",
+        description: "Chinese-style noodles with fresh vegetables"
+      },
+      {
+        id: 28,
+        name: "Schezwan Noodles",
+        category: "Noodles",
+        price: 170,
+        emoji: "🍜",
+        description: "Spicy noodles prepared with Schezwan sauce"
+      },
+      {
+        id: 29,
+        name: "Chicken Momos",
+        category: "Snacks",
+        price: 160,
+        emoji: "🥟",
+        description: "Steamed chicken dumplings with spicy chutney"
+      },
+      {
+        id: 30,
+        name: "Veg Momos",
+        category: "Snacks",
+        price: 130,
+        emoji: "🥟",
+        description: "Steamed vegetable dumplings with chutney"
+      },
+      {
+        id: 31,
+        name: "Paneer Wrap",
+        category: "Snacks",
+        price: 150,
+        emoji: "🌯",
+        description: "Spicy paneer and vegetables in soft bread"
+      },
+      {
+        id: 32,
+        name: "Chicken Shawarma",
+        category: "Snacks",
+        price: 220,
+        emoji: "🌯",
+        description: "Juicy chicken with vegetables and garlic sauce"
+      },
+      {
+        id: 33,
+        name: "Onion Rings",
+        category: "Snacks",
+        price: 100,
+        emoji: "🧅",
+        description: "Crispy fried onion rings with spicy dip"
+      },
+      {
+        id: 34,
+        name: "Garlic Bread",
+        category: "Snacks",
+        price: 120,
+        emoji: "🥖",
+        description: "Toasted bread with garlic butter and herbs"
+      },
+      {
+        id: 35,
+        name: "Mango Juice",
+        category: "Drinks",
+        price: 90,
+        emoji: "🥭",
+        description: "Fresh and chilled mango fruit juice"
+      },
+      {
+        id: 36,
+        name: "Watermelon Juice",
+        category: "Drinks",
+        price: 80,
+        emoji: "🍉",
+        description: "Refreshing watermelon juice"
+      },
+      {
+        id: 37,
+        name: "Cold Coffee",
+        category: "Drinks",
+        price: 130,
+        emoji: "☕",
+        description: "Chilled creamy coffee with chocolate topping"
+      },
+      {
+        id: 38,
+        name: "Strawberry Milkshake",
+        category: "Drinks",
+        price: 160,
+        emoji: "🥤",
+        description: "Creamy strawberry milkshake"
+      },
+      {
+        id: 39,
+        name: "Chocolate Milkshake",
+        category: "Drinks",
+        price: 170,
+        emoji: "🥤",
+        description: "Rich chocolate milkshake with whipped cream"
+      },
+      {
+        id: 40,
+        name: "Mineral Water",
+        category: "Drinks",
+        price: 30,
+        emoji: "💧",
+        description: "Chilled drinking water"
+      },
+      {
+        id: 41,
+        name: "Gulab Jamun",
+        category: "Dessert",
+        price: 90,
+        emoji: "🍮",
+        description: "Soft sweet dumplings served with sugar syrup"
+      },
+      {
+        id: 42,
+        name: "Rasgulla",
+        category: "Dessert",
+        price: 100,
+        emoji: "🍡",
+        description: "Soft Bengali sweet soaked in sugar syrup"
+      },
+      {
+        id: 43,
+        name: "Brownie",
+        category: "Dessert",
+        price: 130,
+        emoji: "🍫",
+        description: "Warm chocolate brownie with rich flavor"
+      },
+      {
+        id: 44,
+        name: "Fruit Salad",
+        category: "Dessert",
+        price: 120,
+        emoji: "🍓",
+        description: "Healthy fresh fruit salad"
+      },
+      {
+        id: 45,
+        name: "Kesar Kulfi",
+        category: "Dessert",
+        price: 100,
+        emoji: "🍦",
+        description: "Traditional Indian saffron-flavored kulfi"
+      },
+      {
+        id: 46,
+        name: "Red Velvet Cake",
+        category: "Dessert",
+        price: 180,
+        emoji: "🍰",
+        description: "Soft red velvet cake with cream cheese frosting"
+      }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem("foodieCart")) || [];
+    let orders = JSON.parse(localStorage.getItem("foodieOrders")) || [];
+    let users = JSON.parse(localStorage.getItem("foodieUsers")) || [];
+    let currentUser =
+      JSON.parse(localStorage.getItem("foodieCurrentUser")) || null;
+
+    let isRegisterMode = false;
+
+    const foodContainer = document.getElementById("foodContainer");
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+
+    const cartButton = document.getElementById("cartButton");
+    const cartCount = document.getElementById("cartCount");
+
+    const themeButton = document.getElementById("themeButton");
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
+    const welcomeUser = document.getElementById("welcomeUser");
+
+    const authModal = document.getElementById("authModal");
+    const closeAuth = document.getElementById("closeAuth");
+    const authTitle = document.getElementById("authTitle");
+    const authForm = document.getElementById("authForm");
+    const authName = document.getElementById("authName");
+    const authEmail = document.getElementById("authEmail");
+    const authPassword = document.getElementById("authPassword");
+    const authMessage = document.getElementById("authMessage");
+    const nameField = document.getElementById("nameField");
+    const switchText = document.getElementById("switchText");
+    const switchAuth = document.getElementById("switchAuth");
+
+    const cartModal = document.getElementById("cartModal");
+    const closeCart = document.getElementById("closeCart");
+    const cartItems = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+    const checkoutButton = document.getElementById("checkoutButton");
+
+    const checkoutModal = document.getElementById("checkoutModal");
+    const closeCheckout = document.getElementById("closeCheckout");
+    const checkoutForm = document.getElementById("checkoutForm");
+    const checkoutMessage = document.getElementById("checkoutMessage");
+
+    const ordersContainer = document.getElementById("ordersContainer");
+
+    function displayFoods(foodList = foods) {
+      foodContainer.innerHTML = "";
+
+      if (foodList.length === 0) {
+        foodContainer.innerHTML = `
+          <p class="empty-message">No food items found.</p>
+        `;
+        return;
+      }
+
+      foodList.forEach(function(food) {
+        const foodCard = document.createElement("div");
+        foodCard.className = "food-card";
+
+        foodCard.innerHTML = `
+          <div class="food-image">${food.emoji}</div>
+
+          <div class="food-details">
+            <h3>${food.name}</h3>
+
+            <p class="food-description">
+              ${food.description}
+            </p>
+
+            <div class="food-bottom">
+              <span class="food-price">₹${food.price}</span>
+
+              <button
+                class="add-button"
+                onclick="addToCart(${food.id})"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        `;
+
+        foodContainer.appendChild(foodCard);
+      });
+    }
+
+    function addToCart(foodId) {
+      const selectedFood = foods.find(function(food) {
+        return food.id === foodId;
+      });
+
+      const existingItem = cart.find(function(item) {
+        return item.id === foodId;
+      });
+
+      if (existingItem) {
+        existingItem.quantity++;
+      } else {
+        cart.push({
+          ...selectedFood,
+          quantity: 1
+        });
+      }
+
+      saveCart();
+      alert(selectedFood.name + " added to cart");
+    }
+
+    function increaseQuantity(foodId) {
+      const item = cart.find(function(food) {
+        return food.id === foodId;
+      });
+
+      if (item) {
+        item.quantity++;
+      }
+
+      saveCart();
+      displayCart();
+    }
+
+    function decreaseQuantity(foodId) {
+      const item = cart.find(function(food) {
+        return food.id === foodId;
+      });
+
+      if (item) {
+        item.quantity--;
+
+        if (item.quantity <= 0) {
+          cart = cart.filter(function(food) {
+            return food.id !== foodId;
+          });
+        }
+      }
+
+      saveCart();
+      displayCart();
+    }
+
+    function removeFromCart(foodId) {
+      cart = cart.filter(function(food) {
+        return food.id !== foodId;
+      });
+
+      saveCart();
+      displayCart();
+    }
+
+    function saveCart() {
+      localStorage.setItem("foodieCart", JSON.stringify(cart));
+      updateCartCount();
+    }
+
+    function updateCartCount() {
+      const totalItems = cart.reduce(function(total, item) {
+        return total + item.quantity;
+      }, 0);
+
+      cartCount.textContent = totalItems;
+    }
+
+    function displayCart() {
+      cartItems.innerHTML = "";
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = `
+          <p class="empty-message">Your cart is empty.</p>
+        `;
+
+        cartTotal.textContent = "₹0";
+        checkoutButton.disabled = true;
+        return;
+      }
+
+      checkoutButton.disabled = false;
+
+      let total = 0;
+
+      cart.forEach(function(item) {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const cartRow = document.createElement("div");
+        cartRow.className = "cart-row";
+
+        cartRow.innerHTML = `
+          <div class="cart-food-info">
+            <h4>${item.emoji} ${item.name}</h4>
+            <p>₹${item.price} each</p>
+          </div>
+
+          <div class="quantity-controls">
+            <button onclick="decreaseQuantity(${item.id})">−</button>
+            <span>${item.quantity}</span>
+            <button onclick="increaseQuantity(${item.id})">+</button>
+          </div>
+
+          <strong>₹${itemTotal}</strong>
+
+          <button
+            class="remove-button"
+            onclick="removeFromCart(${item.id})"
+          >
+            Remove
+          </button>
+        `;
+
+        cartItems.appendChild(cartRow);
+      });
+
+      cartTotal.textContent = "₹" + total;
+    }
+
+    function filterFoods() {
+      const searchText = searchInput.value.toLowerCase();
+      const selectedCategory = categoryFilter.value;
+
+      const filteredFoods = foods.filter(function(food) {
+        const matchesSearch =
+          food.name.toLowerCase().includes(searchText) ||
+          food.description.toLowerCase().includes(searchText);
+
+        const matchesCategory =
+          selectedCategory === "All" ||
+          food.category === selectedCategory;
+
+        return matchesSearch && matchesCategory;
+      });
+
+      displayFoods(filteredFoods);
+    }
+
+    function updateUserInterface() {
+      if (currentUser) {
+        welcomeUser.textContent = "Hi, " + currentUser.name;
+        welcomeUser.style.display = "inline";
+        loginButton.style.display = "none";
+        logoutButton.style.display = "inline-block";
+      } else {
+        welcomeUser.style.display = "none";
+        loginButton.style.display = "inline-block";
+        logoutButton.style.display = "none";
+      }
+    }
+
+    function openLogin() {
+      isRegisterMode = false;
+
+      authTitle.textContent = "Login";
+      nameField.style.display = "none";
+      switchText.textContent = "Don't have an account?";
+      switchAuth.textContent = "Register";
+      authForm.querySelector("button[type='submit']").textContent = "Login";
+      authMessage.textContent = "";
+      authForm.reset();
+      authModal.style.display = "block";
+    }
+
+    function openRegister() {
+      isRegisterMode = true;
+
+      authTitle.textContent = "Create Account";
+      nameField.style.display = "block";
+      switchText.textContent = "Already have an account?";
+      switchAuth.textContent = "Login";
+      authForm.querySelector("button[type='submit']").textContent =
+        "Register";
+      authMessage.textContent = "";
+      authForm.reset();
+      authModal.style.display = "block";
+    }
+
+    authForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = authName.value.trim();
+      const email = authEmail.value.trim().toLowerCase();
+      const password = authPassword.value;
+
+      if (isRegisterMode) {
+        if (!name) {
+          authMessage.textContent = "Please enter your name.";
+          return;
+        }
+
+        const existingUser = users.find(function(user) {
+          return user.email === email;
+        });
+
+        if (existingUser) {
+          authMessage.textContent = "This email is already registered.";
+          return;
+        }
+
+        const newUser = {
+          id: Date.now(),
+          name: name,
+          email: email,
+          password: password
+        };
+
+        users.push(newUser);
+
+        localStorage.setItem(
+          "foodieUsers",
+          JSON.stringify(users)
+        );
+
+        currentUser = {
+          name: newUser.name,
+          email: newUser.email
+        };
+
+        localStorage.setItem(
+          "foodieCurrentUser",
+          JSON.stringify(currentUser)
+        );
+
+        authModal.style.display = "none";
+        updateUserInterface();
+
+        alert("Registration successful!");
+      } else {
+        const user = users.find(function(user) {
+          return user.email === email &&
+                 user.password === password;
+        });
+
+        if (!user) {
+          authMessage.textContent = "Invalid email or password.";
+          return;
+        }
+
+        currentUser = {
+          name: user.name,
+          email: user.email
+        };
+
+        localStorage.setItem(
+          "foodieCurrentUser",
+          JSON.stringify(currentUser)
+        );
+
+        authModal.style.display = "none";
+        updateUserInterface();
+
+        alert("Login successful!");
+      }
+    });
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem("foodieCurrentUser");
+      updateUserInterface();
+      displayOrders();
+      alert("You have been logged out.");
+    }
+
+    function getOrderStatusClass(status) {
+      if (status === "Order Placed") {
+        return "status-placed";
+      }
+
+      if (status === "Preparing") {
+        return "status-preparing";
+      }
+
+      if (status === "Out for Delivery") {
+        return "status-out";
+      }
+
+      if (status === "Delivered") {
+        return "status-delivered";
+      }
+
+      return "status-cancelled";
+    }
+
+    function getStatusStep(status) {
+      const steps = [
+        "Order Placed",
+        "Preparing",
+        "Out for Delivery",
+        "Delivered"
+      ];
+
+      return steps.indexOf(status);
+    }
+
+    function createProgress(status) {
+      if (status === "Cancelled") {
+        return `
+          <span class="order-status status-cancelled">
+            Cancelled
+          </span>
+        `;
+      }
+
+      const currentStep = getStatusStep(status);
+
+      const steps = [
+        {
+          label: "Placed",
+          icon: "✓"
+        },
+        {
+          label: "Preparing",
+          icon: "🍳"
+        },
+        {
+          label: "On the way",
+          icon: "🚴"
+        },
+        {
+          label: "Delivered",
+          icon: "🏠"
+        }
+      ];
+
+      return `
+        <div class="status-progress">
+          ${steps.map(function(step, index) {
+            let className = "";
+
+            if (index < currentStep) {
+              className = "completed";
+            }
+
+            if (index === currentStep) {
+              className = "active";
+            }
+
+            return `
+              <div class="progress-step ${className}">
+                <div class="progress-circle">${step.icon}</div>
+                <span>${step.label}</span>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function displayOrders() {
+      ordersContainer.innerHTML = "";
+
+      if (!currentUser) {
+        ordersContainer.innerHTML = `
+          <p class="empty-message">
+            Please login to view your orders.
+          </p>
+        `;
+        return;
+      }
+
+      const userOrders = orders.filter(function(order) {
+        return order.userEmail === currentUser.email;
+      });
+
+      if (userOrders.length === 0) {
+        ordersContainer.innerHTML = `
+          <p class="empty-message">
+            You have not placed any orders yet.
+          </p>
+        `;
+        return;
+      }
+
+      const reversedOrders = [...userOrders].reverse();
+
+      reversedOrders.forEach(function(order) {
+        const orderCard = document.createElement("div");
+        orderCard.className = "order-card";
+
+        const orderItemsText = order.items.map(function(item) {
+          return `${item.emoji} ${item.name} x ${item.quantity}`;
+        }).join("<br>");
+
+        const canCancel =
+          order.status !== "Delivered" &&
+          order.status !== "Cancelled";
+
+        orderCard.innerHTML = `
+          <div class="order-header">
+            <div>
+              <div class="order-id">Order #${order.id}</div>
+              <div class="order-date">${order.date}</div>
+            </div>
+
+            <span class="order-status ${getOrderStatusClass(order.status)}">
+              ${order.status}
+            </span>
+          </div>
+
+          ${createProgress(order.status)}
+
+          <div class="order-items">
+            ${orderItemsText}
+          </div>
+
+          <div class="order-footer">
+            <strong>Total: ₹${order.total}</strong>
+
+            ${
+              canCancel
+                ? `
+                  <button
+                    class="cancel-order-button"
+                    onclick="cancelOrder('${order.id}')"
+                  >
+                    Cancel Order
+                  </button>
+                `
+                : ""
+            }
+          </div>
+        `;
+
+        ordersContainer.appendChild(orderCard);
+      });
+    }
+
+    function cancelOrder(orderId) {
+      const order = orders.find(function(order) {
+        return order.id === orderId;
+      });
+
+      if (!order) {
+        return;
+      }
+
+      const confirmation = confirm(
+        "Are you sure you want to cancel this order?"
+      );
+
+      if (confirmation) {
+        order.status = "Cancelled";
+
+        localStorage.setItem(
+          "foodieOrders",
+          JSON.stringify(orders)
+        );
+
+        displayOrders();
+        alert("Your order has been cancelled.");
+      }
+    }
+
+    function placeOrder() {
+      const total = cart.reduce(function(sum, item) {
+        return sum + item.price * item.quantity;
+      }, 0);
+
+      const newOrder = {
+        id: String(Math.floor(100000 + Math.random() * 900000)),
+        userEmail: currentUser.email,
+        date: new Date().toLocaleString(),
+        items: [...cart],
+        total: total,
+        status: "Order Placed"
+      };
+
+      orders.push(newOrder);
+
+      localStorage.setItem(
+        "foodieOrders",
+        JSON.stringify(orders)
+      );
+
+      cart = [];
+      saveCart();
+
+      checkoutForm.reset();
+      checkoutModal.style.display = "none";
+      displayOrders();
+
+      alert(
+        "Order placed successfully!\n\n" +
+        "Your order number is #" + newOrder.id
+      );
+
+      document.getElementById("orders").scrollIntoView();
+    }
+
+    function applyTheme() {
+      const savedTheme = localStorage.getItem("foodieTheme");
+
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+        themeButton.textContent = "☀️ Light";
+      } else {
+        document.body.classList.remove("dark");
+        themeButton.textContent = "🌙 Dark";
+      }
+    }
+
+    themeButton.addEventListener("click", function() {
+      document.body.classList.toggle("dark");
+
+      const isDark = document.body.classList.contains("dark");
+
+      localStorage.setItem(
+        "foodieTheme",
+        isDark ? "dark" : "light"
+      );
+
+      themeButton.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+    });
+
+    loginButton.addEventListener("click", openLogin);
+
+    logoutButton.addEventListener("click", logout);
+
+    switchAuth.addEventListener("click", function() {
+      if (isRegisterMode) {
+        openLogin();
+      } else {
+        openRegister();
+      }
+    });
+
+    closeAuth.addEventListener("click", function() {
+      authModal.style.display = "none";
+    });
+
+    cartButton.addEventListener("click", function() {
+      displayCart();
+      cartModal.style.display = "block";
+    });
+
+    closeCart.addEventListener("click", function() {
+      cartModal.style.display = "none";
+    });
+
+    checkoutButton.addEventListener("click", function() {
+      if (!currentUser) {
+        cartModal.style.display = "none";
+        openLogin();
+        alert("Please login before checkout.");
+        return;
+      }
+
+      if (cart.length === 0) {
+        alert("Please add food items to your cart first.");
+        return;
+      }
+
+      cartModal.style.display = "none";
+      checkoutModal.style.display = "block";
+
+      document.getElementById("customerName").value =
+        currentUser.name;
+    });
+
+    closeCheckout.addEventListener("click", function() {
+      checkoutModal.style.display = "none";
+    });
+
+    checkoutForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      if (!currentUser) {
+        checkoutMessage.textContent = "Please login first.";
+        return;
+      }
+
+      placeOrder();
+    });
+
+    searchInput.addEventListener("input", filterFoods);
+    categoryFilter.addEventListener("change", filterFoods);
+
+    window.addEventListener("click", function(event) {
+      if (event.target === authModal) {
+        authModal.style.display = "none";
+      }
+
+      if (event.target === cartModal) {
+        cartModal.style.display = "none";
+      }
+
+      if (event.target === checkoutModal) {
+        checkoutModal.style.display = "none";
+      }
+    });
+
+    displayFoods();
+    updateCartCount();
+    updateUserInterface();
+    displayOrders();
+    applyTheme();
+  </script>
+
+</body>
+</html>
